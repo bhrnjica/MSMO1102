@@ -1,12 +1,12 @@
-#-------------------UNIVEZITET U BIHAÆU-----------------------------------
-#---------------Tehnièki fakultet II Ciklus------------------------------- 
-#MSMO1102      Matematièko modeliranje i ininjerske metode
+#-------------------UNIVEZITET U BIHAÄ†U-----------------------------------
+#---------------TehniÄki fakultet II Ciklus------------------------------- 
+#MSMO1102      MatematiÄko modeliranje i inÅ¾injerske metode
 #--doc. dr. Bahrudin Hrnjica---
 
-#Vremenske serije - skup podataka poredanih kroz odreğeni vremenski period pri èemu imamo samo izlaznu varijablu y
+#Vremenske serije - skup podataka poredanih kroz odreÄ‘eni vremenski period pri Äemu imamo samo izlaznu varijablu y
 
-#Neka imamo neki skup podataka pri èemu imamo samo jednu izlaznu varijablu y.
+#Neka imamo neki skup podataka pri Äemu imamo samo jednu izlaznu varijablu y.
 
-#Uèitavanje podataka
+#UÄitavanje podataka
 #data1 <- read.csv("data/podaci1.csv", header = F, col.names = c("x", "y"), sep = ",", dec = ".", strip.white = TRUE, stringsAsFactors = FALSE);
 
