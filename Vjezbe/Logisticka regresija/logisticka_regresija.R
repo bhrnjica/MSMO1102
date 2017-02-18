@@ -1,12 +1,12 @@
-#-------------------UNIVEZITET U BIHAÆU-----------------------------------
-#---------------Tehnièki fakultet II Ciklus------------------------------- 
-#MSMO1102      Matematièko modeliranje i ininjerske metode
+#-------------------UNIVEZITET U BIHAÃ†U-----------------------------------
+#---------------TehniÄki fakultet II Ciklus------------------------------- 
+#MSMO1102      MatematiÄko modeliranje i inÅ¾injerske metode
 #--doc. dr. Bahrudin Hrnjica---
 
-#Logistièka regresija - 
+#LogistiÃ¨ka regresija - 
 
-#Neka imamo neki skup podataka pri èemu imamo nekoliko ulaznih parametara xi, i jednu izlaznu binarnu varijablu y.
+#Neka imamo neki skup podataka pri Äemu imamo nekoliko ulaznih parametara xi, i jednu izlaznu binarnu varijablu y.
 
-#Uèitavanje podataka
+#UÄitavanje podataka
 #data1 <- read.csv("data/podaci1.csv", header = F, col.names = c("x", "y"), sep = ",", dec = ".", strip.white = TRUE, stringsAsFactors = FALSE);
 
