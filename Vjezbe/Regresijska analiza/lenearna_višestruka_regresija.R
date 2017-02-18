@@ -1,15 +1,15 @@
-#-------------------UNIVEZITET U BIHAÆU-----------------------------------
-#---------------Tehnièki fakultet II Ciklus------------------------------- 
-#MSMO1102      Matematièko modeliranje i ininjerske metode
+#-------------------UNIVEZITET U BIHAÄ†U-----------------------------------
+#---------------TehniÄki fakultet II Ciklus------------------------------- 
+#MSMO1102      MatematiÄko modeliranje i inÅ¾injerske metode
 #--doc. dr. Bahrudin Hrnjica---
 
-#Linearna višestruka regresija - ukljuèuje zavisnost više ulaznih parametra (prediktora, feture, ) 
+#Linearna viÅ¡estruka regresija - ukljuÄuje zavisnost viÅ¡e ulaznih parametra (prediktora, feature, ) 
 #                                 i jedne izlazne varijable (labela).
 #                                   y= f(x1,x2,....) = b0+b1x1+b2x2+...., gdje su b0, b1 - koeficijenti regresije.
 
-#Neka imamo neki skup podataka pri èemu imamo jedan ulazni parametar x, i jednu izlaznu varijablu y.
+#Neka imamo neki skup podataka pri Äemu imamo jedan ulazni parametar x, i jednu izlaznu varijablu y.
 
-#Uèitavanje podataka
+#UÄitavanje podataka
 data1 <- read.csv("data/podaci2.csv", header = T, col.names = c("x1","x2", "y"), sep = ",", dec = ".", strip.white = TRUE, stringsAsFactors = FALSE);
 
 #strukture podataka
@@ -33,7 +33,7 @@ print(formula)
 #korelacijska matrica
 c1 <- cor(data1)
 
-#korelacijska matrica sa signifiakntnim nivom
+#korelacijska matrica sa signifikantnim nivom
 library("survival")
 library("Formula")
 library("ggplot2")
@@ -44,29 +44,29 @@ c2
 c2$r
 # prikaz p-vrijednosti p testa
 c2$P
-#grafièki prikaz korelacijske matrice (veæi krug i tamnija boja veæa korelacija)
+#grafiÄki prikaz korelacijske matrice (veÃ¦i krug i tamnija boja veÄ‡a korelacija)
 library(corrplot)
 corrplot(c1, type = "upper", order = "hclust",  tl.col = "black", tl.srt = 45)
 
-#linearni višestruki regresijski model 
+#linearni viÅ¡estruki regresijski model 
 lrmodel = lm(formula, data1)
 
 #prikaz koeficijenata regresijskog modela
 summary(lrmodel)
 
-#korištenje modela za izraèunavanje vrijednosti podataka za testiranje odnosnoe predvidjanje vrijednosti
+#koriÅ¡tenje modela za izraÃ¨unavanje vrijednosti podataka za testiranje odnosnoe predvidjanje vrijednosti
 new <- data.frame(x1 = c(23, 22), x2 = c(3, 2))
 new$y = predict(lrmodel, new)
 
 #3D dijagrami
 library(lattice)
-cloud(formula, data = data1, pch = 16, # vrsta taèaka
-               main="Grafièki prikaz y=f(x1,x2)")
+cloud(formula, data = data1, pch = 16, # vrsta taÃ¨aka
+               main="GrafiÃ¨ki prikaz y=f(x1,x2)")
 
 library(scatterplot3d)
 sp1 <- scatterplot3d(data1$x1, data1$x2, data1$y, pch = 16, highlight.3d = T)
 
-#regresijska površina i podaci
+#regresijska povrÅ¡ina i podaci
 sp1$plane3d(lrmodel, lty.box = "solid")
 
 #3d Plot
