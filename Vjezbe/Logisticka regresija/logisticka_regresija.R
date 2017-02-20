@@ -1,4 +1,4 @@
-#-------------------UNIVEZITET U BIHAÆU-----------------------------------
+#-------------------UNIVEZITET U BIHAĆU-----------------------------------
 #---------------Tehnički fakultet II Ciklus------------------------------- 
 #MSMO1102      Matematičko modeliranje i inžinjerske metode
 #--doc. dr. Bahrudin Hrnjica---
@@ -7,6 +7,15 @@
 
 #Neka imamo neki skup podataka pri čemu imamo nekoliko ulaznih parametara xi, i jednu izlaznu binarnu varijablu y.
 
-#Učitavanje podataka
-#data1 <- read.csv("data/podaci1.csv", header = F, col.names = c("x", "y"), sep = ",", dec = ".", strip.white = TRUE, stringsAsFactors = FALSE);
+#Učitavanje podataka (mtcars data)
+data1 <- read.csv("data/mtcars.txt", header = T, sep = ",", dec = ".", skip=28, strip.white = TRUE, stringsAsFactors = FALSE);
 
+data1
+str(data1)
+
+
+require(graphics)
+pairs(mtcars, main = "mtcars data")
+coplot(mpg ~ disp | as.factor(cyl), data = mtcars,
+       panel = panel.smooth, rows = 1)
+str(mtcars)
