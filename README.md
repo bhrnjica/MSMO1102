@@ -1,2 +1,2 @@
 # MSMO1102
-Vježbe iz predmeta Matematilko modeliranje i eksperimentalne inžinjerske metode
+Vježbe iz predmeta Matematičko modeliranje i eksperimentalne inžinjerske metode
