@@ -5,32 +5,49 @@
 
 #Logisticka regresija - 
 
-#Neka imamo neki skup podataka pri čemu imamo nekoliko ulaznih parametara xi, i jednu izlaznu binarnu varijablu y.
+#------QA Tim Izvještaj o pregledu proizvoda - -----
 
-#Učitavanje podataka (mtcars data)
-data1 <- read.csv("data/log_reg_data.txt", header = T, sep = "\t", dec = ".", skip=6, strip.white = TRUE, stringsAsFactors = FALSE);
+#   Nad svakim proizvodom izvršen je skup testova koji odredjuju da
+#   li je proizvod dovojno kvalitetan za distibuciju i isporuku.
+#   Manager QA tima na osnovu testova odredjuje kvalitetu proizvoda.
+#   Zadatak Loogisticke regresije jeste da se izgradi Matematicki model koji ce iz testova proizvoda davati vjerojatnocu
+#   ispravnosti proizvoda, odnosno da je proizvod kvalitetan i spreman za isporuku.
 
-data1
-str(data1)
-#odabrati ulatzni parameta udaljenosti 
-disp <- data1$disp;
-#izlazna varijabla binarna koja označava da li se radi o automatskom ili ručnom mjenjaču
-gear <- data1$am;
+#neophodne biblioteke. Ukoliko se ne mogu učitati, to znači da je potrebno pakete peuzeti i intalirati.
+library(ggplot2) #za iscrtavanje visokokvalitetnih grafikona
 
-#iscrtavanje dijagrama i koristenja ggplot paketa
-library(ggplot2)
-library(data.table)
-library(magrittr)
+#   The caret package(short for _C_lassification _A_nd _RE_gression _T_raining) is a set of functions that 
+#   attempt to streamline the process for creating predictive models. The package contains tools for :
+#       -data splitting
+#       -pre - processing
+#       -feature selection
+#       -model tuning using resampling
+#       -variable importance estimation
+#as well as other functionality.
 library(caret)
+
 library(optimx)
 
-cols <- c("0" = "red", "1" = "blue")
 
+#Učitavanje podataka radimo sa klasicnom csv metodom, pri čemu smo učitali 100 testova proizvoda
+data1 <- read.csv("data/log_reg_data.txt", header = T, sep = "\t", dec = ".", skip=7, strip.white = TRUE, stringsAsFactors = FALSE);
+
+#prikaz nekoliko prvih testova
+head(data1)
+
+#pregled strukture podataka 
+str(data1)
+
+
+#iscrtavanje dijagrama i koristenja ggplot paketa
+#konstrukcija vektora sa vrijednostima "red" i "blue" koje će oznacavati vrijednosti out varijable
+cols <- c("0" = "red", "1" = "blue")
+#iscrtavanje podataka 
 ggplot(data1, aes(x = t1, y = t2, color = factor(out))) +
                     geom_point(size = 4, shape = 19, alpha = 0.6) +
                     scale_colour_manual(values = cols, labels = c("Neispravan", "Ispravan"), name = "QA Analiza")
 
-# Definicija logi funkcije
+# Definicija logit funkcije
 sigmoid = function(z)
     {
         1 / (1 + exp(-z))
@@ -55,10 +72,14 @@ abline(v = 0, lty = 2, col = "gray70")
 abline(h = 0.5, lty = 2, col = "gray70")
 
 #definisanje formule za modela lr
-formula = out~t1+t2
+formula = out ~ t1 + t2
+
 #odredjivanje modela logističke regresije pomocu glm, uz binomial parametar
 lr_model = glm(formula, data = data1, family = "binomial")
 
+#pregled logistickog modela
+summary(lr_model)
+cor(lr_model.matrix(fit)[, -1])
 
 #izracunavanje i crtanje granice razdvajanja
 slope <- coef(lr_model)[2] / (-coef(lr_model)[3])

@@ -9,4 +9,3 @@
 
 #Učitavanje podataka
 #data1 <- read.csv("data/podaci1.csv", header = F, col.names = c("x", "y"), sep = ",", dec = ".", strip.white = TRUE, stringsAsFactors = FALSE);
-

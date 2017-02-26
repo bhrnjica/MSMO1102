@@ -1,9 +1,9 @@
 ------ QA Tim Izvještaj o pregledu proizvoda ------
 (primjer podataka uz promjene preuzet sa https://datascienceplus.com/logistic-regression-regularized-with-optimization/)
-Nad svakim proizvodom izvršen je skup testova koji odre?uju da 
+Nad svakim proizvodom izvršen je skup testova koji odredjuju da 
 li je proizvod dovojno kvalitetan za distibuciju i isporuku.
-Manager QA tima na osnovu testova odre?uje kvalitetu proizvoda.
-Zadatak Loogisti?ke regresije jeste da se izgradi Matemati?ki model koji ?e davati vjerojatno 
+Manager QA tima na osnovu testova odredjuje kvalitetu proizvoda.
+Zadatak Loogisticke regresije jeste da se izgradi Matematicki model koji ce davati vjerojatnocu 
 da je proizvod kvaliteta i spreman za isporuku. 
 t1	t2	out
 97.64563	68.86157	1
