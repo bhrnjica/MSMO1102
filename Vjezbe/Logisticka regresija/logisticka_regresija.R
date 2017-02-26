@@ -3,7 +3,7 @@
 #MSMO1102      Matematičko modeliranje i inžinjerske metode
 #--doc. dr. Bahrudin Hrnjica---
 
-#Logistièka regresija - 
+#Logisticka regresija - 
 
 #Neka imamo neki skup podataka pri čemu imamo nekoliko ulaznih parametara xi, i jednu izlaznu binarnu varijablu y.
 

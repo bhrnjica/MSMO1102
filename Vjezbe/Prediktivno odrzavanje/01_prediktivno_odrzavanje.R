@@ -25,9 +25,11 @@ data1$team = as.factor(data1$team);
 # TRUE - pokvarene mašine imaju preko 60 sedmica vijek.
 boxplot(vijek ~ defekt, data = data1, 
     #
-    main = "Životni vijeka mašina", xlab = "Stanje mašina", ylab = "Vijek mašine (sedmica)")
+    main = "Životni vijeka mašina", xlab = "Stanje mašine", ylab = "Vijek mašine (sedmica)")
 
 
-formula = dependantvars ~ pressureInd + moistureInd + temperatureInd + team + provider;
+formula = defekt ~ vijek + pritisak + vlaga + temparatura + team + provider;
 
-survreg(fromula, data = maintenance, dist = "gaussian")
+model = glm(formula, data = data1, family = "gaussian")
+summary(model)
+
