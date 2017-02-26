@@ -1,4 +1,4 @@
-#-------------------UNIVEZITET U BIHAcU-----------------------------------
+#-------------------UNIVEZITET U BIHACU-----------------------------------
 #---------------Tehnicki fakultet II Ciklus------------------------------- 
 #MSMO1102      Matematicko modeliranje i inžinjerske metode
 #--doc. dr. Bahrudin Hrnjica---
