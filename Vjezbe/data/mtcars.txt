@@ -19,8 +19,8 @@
 19	[, 6] 	wt 		težina (1000 lbs)
 20	[, 7] 	qsec 	1/4 mile time
 21	[, 8] 	vs 	V/S
-22	[, 9] 	am 		mjenja? (0 = automatic, 1 = manual)
-23	[,10] 	gear 	broj zup?anika
+22	[, 9] 	am 		mjenjac (0 = automatic, 1 = manual)
+23	[,10] 	gear 	broj zupcanika
 24	[,11] 	carb 	broj karburatora
 25
 26	Source: Henderson and Velleman (1981), Building multiple regression models interactively. Biometrics, 37, 391–411.

@@ -12,6 +12,24 @@ data1 <- read.csv("data/mtcars.txt", header = T, sep = ",", dec = ".", skip=28, 
 
 data1
 str(data1)
+#odabrati ulatzni parameta udaljenosti 
+disp <- data1$disp;
+#izlazna varijabla binarna koja označava da li se radi o automatskom ili ručnom mjenjaču
+gear <- data1$am;
+
+#iscrtavanje dijagrama
+
+
+
+
+
+
+# with(data, expression)
+# example applying a t-test to a data frame mydata
+data1$carb
+with(data1, { data1$carb <- data1$carb + 2; print(data1$carb) ;})
+
+
 
 
 require(graphics)
