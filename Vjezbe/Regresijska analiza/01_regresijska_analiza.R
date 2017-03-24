@@ -31,7 +31,7 @@ formula = y ~ x
 lrmodel = lm(formula, data1)
 
 #prikaz koeficijenata regresijskog modela
-lrmodel
+summary(lrmodel)
 #plot(lrmodel)
 #korištenje modela za izracunavanje vrijednosti podataka za testiranje odnosnoe predvidjanje vrijednosti
 new <- data.frame(x = c(23, 2))
