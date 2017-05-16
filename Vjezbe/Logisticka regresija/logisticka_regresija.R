@@ -30,7 +30,7 @@ library(optimx)
 
 
 #Učitavanje podataka radimo sa klasicnom csv metodom, pri čemu smo učitali 100 testova proizvoda
-data1 <- read.csv("data/log_reg_data.txt", header = T, sep = "\t", dec = ".", skip=7, strip.white = TRUE, stringsAsFactors = FALSE);
+data1 = read.csv("data/log_reg_data.txt", header = T, sep = "\t", dec = ".", skip=7, strip.white = TRUE, stringsAsFactors = FALSE);
 
 #prikaz nekoliko prvih testova
 head(data1)
@@ -38,14 +38,19 @@ head(data1)
 #pregled strukture podataka 
 str(data1)
 
+#konverzija output var u bool 
+data1$out=data1$out==1
 
 #iscrtavanje dijagrama i koristenja ggplot paketa
 #konstrukcija vektora sa vrijednostima "red" i "blue" koje će oznacavati vrijednosti out varijable
-cols <- c("0" = "red", "1" = "blue")
+cols <- c("F" = "red", "T" = "blue")
 #iscrtavanje podataka 
-ggplot(data1, aes(x = t1, y = t2, color = factor(out))) +
+ggplot(logData,
+aes(x = t1, y = t2, color = factor(out))) +
                     geom_point(size = 4, shape = 19, alpha = 0.6) +
-                    scale_colour_manual(values = cols, labels = c("Neispravan", "Ispravan"), name = "QA Analiza")
+                    scale_colour_manual(values = cols,
+                   labels = c("Neispravan", "Ispravan"),
+                   name = "QA Analiza")
 
 # Definicija logit funkcije
 sigmoid = function(z)
@@ -101,11 +106,9 @@ out = c(1, 1, 0, 1, 0, 0, 1)
 test <- data.frame(t1, t2, out);
 
 p <- predict(lr_model, newdata = test, type = "response")
-pr <- prediction(p, test$out)
-prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+performance(pred, measure = "auc")
 plot(prf)
 
 #povrsina ispod krive
 auc <- performance(pr, measure = "auc")
 auc <- auc@y.values[[1]]
-auc

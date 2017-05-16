@@ -4,7 +4,7 @@ Nad svakim proizvodom izvršen je skup testova koji odredjuju da
 li je proizvod dovojno kvalitetan za distibuciju i isporuku.
 Manager QA tima na osnovu testova odredjuje kvalitetu proizvoda.
 Zadatak Loogisticke regresije jeste da se izgradi Matematicki model koji ce davati vjerojatnocu 
-da je proizvod kvaliteta i spreman za isporuku. 
+da je proizvod kvaliteta i spreman za isporuku na osnovu ulaznih podataka. 
 t1	t2	out
 97.64563	68.86157	1
 82.22666	42.71988	0

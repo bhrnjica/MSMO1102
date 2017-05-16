@@ -1,0 +1,240 @@
+---
+title: "Regresijska analiza i modeliranje sile rezanja"
+output:
+  html_notebook: default
+  pdf_document:
+    latex_engine: xelatex
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+# Opis Eksperimentalnog istraživanja
+
+Izvršeno je eksperimentalno istraživanje sile rezanja, pri čemu se mjerila sila rezanja u funkciji hrapavosti obrađene površine i parametara obrade. Ulazni parametri koji su bili predmet mjerenja predstavljali su:
+
+* Hrapavost obradne površine $HRc$ [MPA],
+* Brzina rezanja, $v_c$ [m/mm],
+* Posmak obrade, $f$ [mm/o],
+* Dubina rezanja $a_p$ [mm].
+
+Sila rezanja mjerila se u sva tri pravca i to:
+
+* Aksijalna Sila rezanja, $F_a$ [N]
+* Radijalna Sila rezanja, $F_r$ [N] i 
+* Tangencijalna Sila rezanja $F_t$ [N].
+
+Ukupno je izvršeno 38 mjerenja, pri čemu su se varirali ulazni parametri u sljedećim intervalima:
+
+* Brzina rezanja, $v_c$, u intervalu od 50 - 300,
+* Posmak obrade, $f$, u intervalu od 0,05 do 0,2,
+* Dubina rezanja, $a_p$ u intervalu od 0.15 do 0.4.
+
+Zadatak ovog rada predstavlja regresijsku analizu i modeliranje ukupne sile rezanja u funkciji ulaznih parametara, da bi se dobili pouzdani modeli za predviđanje parametre obrade.
+
+Eksperimentalni podaci učitani su iz tekstualne datoteke, te formatirani i primpremljeni za analizu. naime sljedeća R skripta prikazuje primjer učitavanja podataka i formatiranja kolona u tipove koji su spremni za nalizu.
+Eksperimentalni podaci prikazani su u narednoj tabeli:
+
+```{r}
+library(readr)
+cf_data <- read_delim("C:/sc/git/github/MSMO1102/Vjezbe/Sila rezanja/sila_rezanja_data.txt", 
+    "\t", escape_double = FALSE, col_types = cols(HRc = col_double(), 
+        RB = col_skip(), f = col_double(), 
+        vc = col_double()), locale = locale(decimal_mark = ",", 
+        grouping_mark = "."), trim_ws = TRUE, 
+    skip = 10)
+cf_data
+```
+
+# Regresijska Analiza
+Na osnovu eksperimentalnog istraživanja koje je sprovedeno, te identificiranih ulaznih i izlaznih parametara regresijska analiza sprovodi se na:
+
+* 4 ulazna parametra i 
+* 1 izlazna varijabla koju čini totalnu silu rezanja $F_{tot}=\sqrt{F_{a}^{2}+F_{r}^{2}+F_{t}^{2}}$.
+
+Rezultat regresijske analize predstavljat će izračunavanje regresijskih modela totalne sile rezanja $F_{tot}$ u funkciji ulaznih parametara, odnosno:
+$F_{tot}= f(HRc, v_a, f,a_p)$.
+
+## Analiza eksperimentalnih podataka
+
+Na samom početku potrebno je izvršiti analizu dobijenih eksperimentalnih podataka. Njbrži način dobijanja globalne slike o podacima jeste predstaviti podatke u obliku grafikona.
+
+Kako smo ranije naglasili izlazna varijable predstavlja totalna sila rezanja $F_{tot}, na samom početku potrebno je iz postojećih vrijednosti za sve tri komponente odrediti za savko mjerenje totalnu silu. To znači da ćemo dodati novu kolonu u eksperimentu koja će predstavljati ukupnu silu rezanja $F_{tot}$.
+To ćemo lahko uraditi ukoliko izvršimo sljedeću R skriptu
+```{r}
+#F_tot nova kolona u eksperimentalnim podacima koja predstavlja totalnu silu rezanja,
+# a dobijena je jednostavnim izračunavanjem internziteta sve tri kkomponente
+cf_data$Ftot=with(cf_data, sqrt(Fa^2+Ft^2+Fr^2));
+```
+
+Izvršićemo grafički prikaz podataka u obliku dijagrama raspršenosti i vidjeti kako su podaci organizirani iz grafičke perspektive. Prikažimo dijagrame raspršenosti preko funkcije "plot": 
+
+```{r}
+# Define colors to be used for cars, trucks, suvs
+plot_colors <- c(rgb(r=0.0,g=0.0,b=0.9), "red", "forestgreen")
+
+plot(cf_data$HRc,cf_data$Ftot, col=plot_colors[1], type = "p", pch = 19, xlim = range(43,56), ylim = range(min(cf_data$Ftot),max(cf_data$Ftot)), ann = F)
+
+# nazivi x i y osa
+title(xlab="hrapavost")
+title(ylab="Ukupna sila rezanja")
+
+# Legenda na gornjem lijevom uglu dijagrama
+legend("topleft", names(cf_data[c(8)]), cex=0.8, col=plot_colors, 
+    lwd=2,  pch = 19);
+
+```
+Prethodni dijagram pokazuje silu rezanja u funkciji hrapavosti obratka. Kako se može vidjeti iz prezentiranog dijagrama ne može se odredti linearna ovisnost sile rezanja i hrapavosti. Kvadratna ovisnost može se nazirati iz prikazane vrijednosti.
+
+Donjim dijagramom moguće je pokazati raspodjelu sile rezanja.
+
+```{r}
+hist(cf_data$Ftot, prob = TRUE, 
+     main = "Histogram ukupne sile rezanja i gustoće", 
+     xlab ="Ukupna sila rezanja" ,
+     ylab = "gustoća" );
+lines(density( cf_data$Ftot), col="red" )
+```
+
+Iz raspodjele sile rezanja uočavamo normalnu distribuciju, kojoj ukupna sile rezanja teži. 
+
+
+## Korelacijska analiza parametara
+U ovom dijelu analiziraćemo međusobnu zavisnost odnosno korelaciju među varijablama.Najjednostavnii pristup određivanja uzajamne korelacije među varijablama predstavlja jednostavan dijagrama raspršenosti između dvije varijable.
+Da bi grafički prikazali uzajamnu korrelaciju između brzine rezanja $v_c$ i totalne sile rezanja $F_{tot}$ koristićemo funkciju plot:
+```{r}
+plot(cf_data$vc,cf_data$Ftot, main = "Sila rezanja u funkciji brzine", 
+     xlab ="Ukupna sila rezanja" ,
+     ylab = "gustoća" );
+```
+Iz prethodnog dijagrama možemo uočiti da nema značajnije korelacije između ove dvije varijable. Ukoliko bi htjeli da se uvjerimo u to pozvaćemo funkciju za izračunavanje korelacije među vdije varijable:
+```{r}
+cor(cf_data$vc,cf_data$Ftot)
+```
+Vidimo da je $r(v_c, F_{tot})= -0.1988$ što predstavlja vrlo malu korelaciju među varijablama.
+
+Korištenjem funkcije $pairs$ možemo dobiti grafičku reprezentacije korelacije među svakom od variabli u eksperimentu.
+
+```{r}
+pairs(cf_data[c(1,2,3,4,8)],main = "Koelacijska matrica eksperimenta")
+```
+Iz gornjih dijagrama vidmo da posmak $f$ i dubina rezanja $a_p$ imaju određenu vrstu korelacije sa silom rezanja.
+
+Odredimo sve vrijednosti korelacije u našim eksperimentalnim podacima tako što ćemo funkciji corel proslijediti varijablu cf_data..
+```{r}
+cor(cf_data[c(1,2,3,4,8)])
+```
+
+Iz korelacijske tabele  u kojoj su prikazane sve vrijednosti koeficijenta korelacije uočavamo da postoji donekle veza srednje jačine (vrijednosti $r$ oko $0.5-0.6$) između  totalne sile rezanja i posmaka koja iznosi $0.5787$, te totalne sile rezanja i dubine rezanja koja iznosi $0.6425$. Da bi korelacijska analiza bila i potvrđena potrebno je izvršiti test korelacijske analize te odrediti jačinu korelacije među parametrima. Testiranje korelacijske analize vršimo preko:
+```{r}
+cor.test(cf_data$vc,cf_data$Ftot)
+```
+Rezultat korelacijskog testa za brzinu i silu rezanja pokazuju da je $r(36)=-0.19$ a $p-value=0.2314$ zbog čega zaključujemo da je korelacija ove dvije varijable vrlo slaba, odnosno test uticajnosti slabu korelaciju.
+
+Testirajmo značajnost korelacije između dubine $a_p$ i sile rezanja $F_{tot}$.
+```{r}
+cor.test(cf_data$ap,cf_data$Ftot)
+```
+Iz prikazanog rezultata korelacijskog testa vidimo da dubina i sila rezanja imaju snažnu korelaciju koju potvrđuje test značajnosti korelacije i $p-value= 1.367e-05$ što predstavlja vrlo malu vrijednost u odnosu na graničnu vrijednost 0.05. Također, iz testa možemo uočiti interval pouzdanosti koji se kreće od 0.4062809 0.7982382.
+
+#Šta p-vrijednosti (p-value) govori o statističkim podacima 
+
+Kada se izvršava testiranje hipoteze u statistici, p-vrijednost (p-value) pomaže da se odredi značajnost rezultata testa. Test hipoteze se koristi za testiranje validacije pretpostavke koja se formira nad populacijom. Pretpostavka da nema nikakve zavisnosti između dvije varijable zovemo nulta hipoteza.
+Alternativne hipoteze predstavljaju hipoteze koje predstavljaju kontradikciju nulte hipoteze, odnosno opovrgavaju nultu hipotezu. Sve hipoteze koriste p-vrijednost da bi izmjerile jačinu dokaza. P-vrijednost predstavlja broj između 0 i 1 koji se interpretira na sljedeći način:
+* Mala vrijednosti  p-value (oko  ≤ 0.05) pokazuje jak dokaz protiv nulte hipoteze.
+* Velika vrijednost p-value (> 0.05) pokazuje slabe dokaze protiv nulte hipoteze, tako da nemamo argumenata da odbacimo nultu hipotezu.
+* Vrijdnost p-value koja je blizu granične vrijednosti (0.05) predstavlja marginalnu ali ipak dovoljno da se u nekim slučajevima nulta hipoteza odbaci.
+
+
+
+## Linearni regresijski model
+
+Nakon analize podataka moguće je definisati prvi model koji će predstavljati linearni regresijski model.Iako već iz korelacijske analize možemo uvidjeti da linearni model neće biti pouzdan, ipak sprovedimo ovu proceduru.
+Linearni regresijski model definišemo preko $lm$ funkcije.
+```{r}
+l_model = lm(Ftot ~ HRc + vc + f + ap, data = cf_data);
+summary(l_model)
+```
+
+Iz prikazanog primjera vidimo da smo funkciji $lm$ definisali formulu modela $Ftot \sim HRc + v_c + f + a_p$, pri čemu varijabla $F_{tot}$ koja se nalazi na lijevoj strani tilda simbola predstavlja izlazu varijablu, a s desne strane se nalaze prediktori koji su povezani + operacijom. + operacija označava linearnu zavisnost parametara od izlazne varijable. 
+
+Rezultat modeliranja prikazan je gornjom tabelom pri kojoj:
+
+* $b_0$ - odgovara (Intercept),
+* $b_1$ - odgovara $HRc$,
+* $b_2$ - odgovara $v_c$, 
+* $b_3$ - odgovara $f$ i 
+* $b_4$ - odgovara $a_p$.
+
+Na osnovu rezultata naš linearni regresijski model:
+
+$F_{tot} = -26.61275 + 0.64188\cdot HRc - 0.08733\cdot v_c + 714.48284 \cdot f + 387.49965\cdot a_p$.
+
+Iz prikazanog F - testa uticajnosti parametara vidimo da su samo $f$ i $a_p$ parametri uticajni, dok je hrapavost $HRc$ i brzina rezanja $v_c$ imaju visoku vrijednost $Pr(>|t|)$ a što daje malo dokaza za odbijanje nulte hipoteze. S druge strane uočavamo da je  $R^2 = 0.7006$, iz kojeg možemo zaključiti da model ne opisuje podatke sa visokim koeficijentom korelacije. Iz tog razloga preporučuje se da se model proširi sa interakcijama odnosno parametrima višeg stepena.
+
+U tom pogledu ispitajmo model pri kojem ćemo uključiti sve interakcije među ulaznim parametrima
+```{r}
+l_model1 = lm(Ftot ~ HRc + vc + f + ap + HRc * vc + HRc*f + HRc*ap + vc*f + vc*ap + f*ap, data = cf_data);
+summary(l_model1)
+```
+
+Iz prikazanog test vidimo da su uticajni parametri $f$ i $a_p$ te $f\cdot a_p$. Isto tako možemo uočiti da je u pitanju vrlo jaka stepen uticajnosti jer je p-vrijednost vlo mala. Isto tako $r^2$ ima veću vrijednost u odnosu na čisti linearni model. Međutim, regresijsku analizu potrebno je vršiti dalje te provjeriti modele višeg stepena. 
+ 
+U ovoj fazi potrebno je testirati regresijske modele višeg reda. U tom pogledu posljednji model ćemo proširiti sa kvadratnim članovima ulaznih parametara. Pa imamo:
+ 
+```{r}
+l_model2 = lm(Ftot ~ HRc + vc + f + ap + HRc * vc + HRc*f + HRc*ap + vc*f + vc*ap + f*ap + I(HRc^2) + I(vc^2) + I(f^2) + I(ap^2), data = cf_data);
+summary(l_model2)
+```
+Iz posljednjeg testa regresijskog modela vidimo da $r^2$ iznosi $0.9$, a podešeni (adjusted) R^2 $R^2 = 0.84$ što predstavlja visoku vrijednost s kojim možemo smatrati model pouzdanim. Isto tako iz priloženog testa možemo vidjeti da su uticajni regresijski koeficijenti $HRc$, $v_c$, $f$, $HRc^2$, $vc \cdot a_p$ i $f \cdot a_p$.
+
+
+# Određivanje najpouzdanijeg regresijskog modela
+
+Iz prethodne analize moguće je izabrati samo one prediktore i njihove interakcije odnosno kvadratne vrijednosti koji su se pokazali značajni kroz ove tri analize, te na osnovu toga odrediti model samo u odnosu na signifikantne parametre. Iz posljednjeg primjera vidimo da svi ulazni parametri imaju određenu signifikantnost jer se vrijednosti $Pr(>|t|)$ kreću oko granične vrijednosti od $0.05$. Isto tako iz prethodnih modela vidimo da interakcije koje su signifikantne predstavljaju $a_p\cdot v_c$ te $f\cdot a_p$. Na kraju kvadratni članovi koji su se pokazali signifikantni predstvalja hrapavost $HRc^2$. Ako spomenute parametre uključimo u regresijski model, a ostale izostavimo dobijamo sljedeći model:
+
+```{r}
+l_model3 = lm(Ftot ~ HRc + vc + f + ap + vc*ap + f*ap + I(HRc^2), data = cf_data);
+summary(l_model3)
+```
+
+Iz testa vidimo da su svi odabrani parametri signifikatni (značajni), da je $r^2$ i podeseni $r^2$ visoki 0.88 i 0.85 i ujednačnei, koji u konačnici predstavljaju pouzdanije vrijednosti u odnosu na prethodni model.
+Na osnovu izloženog možemo konačno odrediti najpouzdaniji model koji predstavlja:
+
+$F_{tot} = -1336.6155 + HRc \cdot 50.4831 - 0.6383 \cdot v_c + 2226.1039 \cdot f + 750.6930 \cdot a_p -0.5036 \cdot HRc^2 + 2.4545 \cdot v_c \cdot a_p + -6487.1567 \cdot f \cdot a_p.
+
+
+```{r}
+d = cf_data
+d$predicted <- predict(l_model3)   # Save the predicted values
+d$residuals <- residuals(l_model3) # Save the residual values
+# Quick look at the actual, predicted, and residual values
+d[c(8,9,10)]
+plot(d[c(8,9)], main="Rezidual")
+lines(x=c(0,300), y=c(0,300), col="red")
+```
+
+#Predviđanje vrijednosti sile rezanja
+
+Nakon što smo odredili najpouzdaniji model, u zadnjoj fazi modeliranja regresijskom analizi model je potrebno testirati kako predviđa vrijednost izlazne varijable za ulazne parametre koje nisu iz skupa podataka nad kojim je model određen. U tom pogledu formirajmo novi skup podataka. Novi skup podakata formirajmo od dvije nove vrste u kojim ulazni parametri imaju vrijednosti van prethodnog skupa nad kojim je model izračunat. Vrijednosti za silu rezanja u ovom stadiju ne trebamo jer vrijednosti će biti izračunate preko regresijskog modela. Naime u ovoj fazi potrebno je koristiti novi skup podataka pri kojem testiramo  kako model koji je dobijen predviđa vrijednost dsile rezanja.
+Novi sku podataka sastoji se od dvije vrste.
+
+```{r}
+testData = data.frame(
+  HRc = c(51, 49),
+  vc  = c(135, 110),
+  f   = c(0.12,0.13),
+  ap  =c(0.25,0.26)
+);
+
+testData
+
+```
+Na osnovu ulaznih podataka koje smo definisali, izračunajmo vrijednosti ukupne sile rezanja.
+```{r}
+# za nove vrijednosti ulaznih parametara izračunavamo silu rezanja pomoću dobijenog modela
+predvidjanje = predict(l_model3,testData)
+predvidjanje
+```
+Viz gornjeg rezultata vidimo da je ukupna sile rezanja za ulazne parametre $\hat F_{tot}(51,135,0.12,0.25)=185.0494$ a za $\hat F_{tot}(49,110,0.13,0.26)=193.2341$.
+
