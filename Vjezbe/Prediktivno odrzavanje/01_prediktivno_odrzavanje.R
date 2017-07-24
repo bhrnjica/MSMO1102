@@ -6,6 +6,10 @@
 #Prediktivno odrzavanje - razvijanje prediktivnih modela koje daju odgovor na pitanje: Koja ili kada ce sljedeca masina 
 #                          ili komponenta proizvodnje imati zastoj.
 
+# https://jamessdixon.wordpress.com/2014/05/06/kaplan-meier-survival-analysis-using-f/
+
+
+
 #Neka imamo skup podataka koji predstavlja zivotni vijek (en. lifetime) mašine odnosno koliko dugo (u sedmicama) mašina radi do sada.
 # ulazni parametri predstavljaju indeks za pritisak, vlagu i temparaturu.
 #Ucitavanje podataka
