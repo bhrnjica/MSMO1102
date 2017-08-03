@@ -44,14 +44,15 @@ library(survival)
 dependantvars = Surv(data1$vijek, data1$defekt)
 
 # Izgradnja modela (koristenje gaussove distrubicije)
-ap_model = survreg(dependantvars ~ pritisak + vlaga + temparatura + team + provider, dist = "gaussian", data = data1)
+survival_regression_model = survreg(dependantvars ~ pritisak + vlaga + temparatura + team + provider, dist = "gaussian", data = data1)
 
 summary(ap_model)
 
 #graficki prikaz rezultata koristenjem paketa GGally
 library(GGally)
-maintenance_graph <- survfit(Surv(vijek, defekt) ~ 1, data = data1)
-ggsurv(maintenance_graph)
+#Caplan Meiet Curve
+cm_curve <- survfit(Surv(vijek, defekt) ~ 1, data = data1)
+ggsurv(cm_curve)
 
 # sa dijagrama mozemo vidjeti da svaka masina ima 50 sedmica rada,a da nakon 50 sedmica imamo procente za zastoj masine.
 # sada se postavlja pitanje kako da odredimo koja ce sljedeca masina imati zastoj za naredni period nrp. dvije sedmice.
@@ -60,7 +61,7 @@ ggsurv(maintenance_graph)
 
 # Odrediti predvidjanje zastoja masine pri vjerojatnosti od p=0.5
 # 
-ezastoj = predict(survreg, newdata = data1, type = "quantile", p = .5)
+ezastoj = predict(survival_regression_model, newdata = data1, type = "quantile", p = .5)
 
 # konstrukcija data.frame za predvidjanje  
 predvidjanje = data.frame(ezastoj)
