@@ -46,7 +46,7 @@ dependantvars = Surv(data1$vijek, data1$defekt)
 # Izgradnja modela (koristenje gaussove distrubicije)
 survival_regression_model = survreg(dependantvars ~ pritisak + vlaga + temparatura + team + provider, dist = "gaussian", data = data1)
 
-summary(ap_model)
+summary(survival_regression_model)
 
 #graficki prikaz rezultata koristenjem paketa GGally
 library(GGally)
